@@ -7,7 +7,7 @@ User=your_username
 Group=www-data
 WorkingDirectory=/Users/nathandykstra/frc-python
 Environment="PATH=$HOME/frc-python/venv/bin"
-ExecStart=/Users/nathandykstra/frc-python/venv/bin/gunicorn --workers 3 --bind unix:frc-analysis.sock -m 007 wsgi:app
+ExecStart=$HOME/frc-python/venv/bin/gunicorn --workers 3 --bind unix:frc-analysis.sock -m 007 wsgi:app
 
 [Install]
 WantedBy=multi-user.target
