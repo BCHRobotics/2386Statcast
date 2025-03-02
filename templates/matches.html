@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FRC Matches</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .match-section {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .match-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .match-option {
+            padding: 8px;
+            margin: 2px 0;
+        }
+        .red-alliance {
+            color: #d32f2f;
+        }
+        .blue-alliance {
+            color: #1976d2;
+        }
+        .team-opr {
+            margin-left: 10px;
+            font-style: italic;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        optgroup {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .team-number {
+            font-weight: bold;
+        }
+        .team-name {
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event Matches</h1>
+    <form action="/analysis" method="post">
+        <input type="hidden" name="event_key" value="{{ event_key }}">
+        
+        <select name="match_key" required>
+            <option value="">Select a Match</option>
+            
+            {% if qual_matches %}
+            <optgroup label="Qualification Matches">
+                {% for match_number, match in qual_matches %}
+                <option value="{{ match['key'] }}">
+                    Qual {{ match_number }} - 
+                    Red: {% for team in match['alliances']['red']['team_keys'] %}
+                        <span class="team-number">{{ team[3:] }}</span>
+                        ({{ team_info[team]['nickname'] }})
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %} vs
+                    Blue: {% for team in match['alliances']['blue']['team_keys'] %}
+                        <span class="team-number">{{ team[3:] }}</span>
+                        ({{ team_info[team]['nickname'] }})
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </option>
+                {% endfor %}
+            </optgroup>
+            {% endif %}
+            
+            {% if quarter_matches %}
+            <optgroup label="Quarter Finals">
+                {% for set_number, match_number, match in quarter_matches %}
+                <option value="{{ match['key'] }}">
+                    Quarter {{ set_number }} Match {{ match_number }} - 
+                    Red: {% for team in match['alliances']['red']['team_keys'] %}
+                        <span class="team-number">{{ team[3:] }}</span>
+                        ({{ team_info[team]['nickname'] }})
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %} vs
+                    Blue: {% for team in match['alliances']['blue']['team_keys'] %}
+                        <span class="team-number">{{ team[3:] }}</span>
+                        ({{ team_info[team]['nickname'] }})
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </option>
+                {% endfor %}
+            </optgroup>
+            {% endif %}
+            
+            {% if semi_matches %}
+            <optgroup label="Semi Finals">
+                {% for set_number, match_number, match in semi_matches %}
+                <option value="{{ match['key'] }}">
+                    Semi {{ set_number }} Match {{ match_number }} - 
+                    Red: {% for team in match['alliances']['red']['team_keys'] %}
+                        <span class="team-number">{{ team[3:] }}</span>
+                        ({{ team_info[team]['nickname'] }})
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %} vs
+                    Blue: {% for team in match['alliances']['blue']['team_keys'] %}
+                        <span class="team-number">{{ team[3:] }}</span>
+                        ({{ team_info[team]['nickname'] }})
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </option>
+                {% endfor %}
+            </optgroup>
+            {% endif %}
+            
+            {% if final_matches %}
+            <optgroup label="Finals">
+                {% for match_number, match in final_matches %}
+                <option value="{{ match['key'] }}">
+                    Final {{ match_number }} - 
+                    Red: {% for team in match['alliances']['red']['team_keys'] %}
+                        <span class="team-number">{{ team[3:] }}</span>
+                        ({{ team_info[team]['nickname'] }})
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %} vs
+                    Blue: {% for team in match['alliances']['blue']['team_keys'] %}
+                        <span class="team-number">{{ team[3:] }}</span>
+                        ({{ team_info[team]['nickname'] }})
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </option>
+                {% endfor %}
+            </optgroup>
+            {% endif %}
+        </select>
+        
+        <button type="submit">Analyze Match</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<div class="alliance red-alliance">
+    Red Alliance:
+    {% set red_total = 0 %}
+    {% for team in match['alliances']['red']['team_keys'] %}
+        {% set team_opr = opr_data.get('oprs', {}).get(team, 0) %}
+        {% set red_total = red_total + team_opr %}
+        {{ team[3:] }}
+        <span class="team-opr">
+            (OPR: {{ "%.2f"|format(team_opr) }})
+        </span>
+        {% if not loop.last %}, {% endif %}
+    {% endfor %}
+</div>
+
+<div class="alliance blue-alliance">
+    Blue Alliance:
+    {% set blue_total = 0 %}
+    {% for team in match['alliances']['blue']['team_keys'] %}
+        {% set team_opr = opr_data.get('oprs', {}).get(team, 0) %}
+        {% set blue_total = blue_total + team_opr %}
+        {{ team[3:] }}
+        <span class="team-opr">
+            (OPR: {{ "%.2f"|format(team_opr) }})
+        </span>
+        {% if not loop.last %}, {% endif %}
+    {% endfor %}
+</div>
+
+<div>
+    Red Alliance Total OPR: {{ "%.2f"|format(red_total) }}
+</div>
+<div>
+    Blue Alliance Total OPR: {{ "%.2f"|format(blue_total) }} 
