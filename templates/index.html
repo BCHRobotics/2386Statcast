@@ -6,16 +6,10 @@
 </head>
 <body>
     <h1>FRC Match Analysis</h1>
-    <h2>Select Event</h2>
-    <form action="/matches" method="post">
-        <select name="event_key">
-            {% for event in events %}
-            <option value="{{ event.key }}">
-                {{ event.name }} - {{ event.city }}, {{ event.state_prov }} ({{ event.start_date }})
-            </option>
-            {% endfor %}
-        </select>
-        <button type="submit">View Matches</button>
+    <h2>Enter Team Number</h2>
+    <form action="/events" method="post">
+        <input type="text" name="team_number" placeholder="Enter Team Number" required>
+        <button type="submit">View Events</button>
     </form>
 </body>
 </html>

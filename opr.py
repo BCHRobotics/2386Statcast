@@ -91,6 +91,19 @@ def get_matches():
                          opr_data=opr_data,
                          team_info=team_info)
 
+@app.route('/events', methods=['POST'])
+def get_events():
+    team_number = request.form['team_number']
+    team_key = f"frc{team_number}"
+    year = 2025
+    
+    # Get events data for the team
+    team_events_url = f"https://www.thebluealliance.com/api/v3/team/{team_key}/events/{year}"
+    events_response = requests.get(team_events_url, headers=headers)
+    events_data = events_response.json()
+    
+    return render_template('events.html', events=events_data, team_number=team_number)
+
 @app.route('/analysis', methods=['POST'])
 def analyze_match():
     event_key = request.form['event_key']
