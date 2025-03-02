@@ -2,16 +2,14 @@
 <html>
 <head>
     <title>2386 FRC Match Analysis</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>FRC Match Analysis</h1>
-        <h2>Enter Team Number</h2>
-        <form action="/events" method="post">
-            <input type="text" name="team_number" placeholder="Enter Team Number" required>
-            <button type="submit">View Events</button>
-        </form>
-    </div>
+    <h1>FRC Match Analysis</h1>
+    <h2>Enter Team Number</h2>
+    <form action="/events" method="post">
+        <input type="text" name="team_number" placeholder="Enter Team Number" required>
+        <button type="submit">View Events</button>
+    </form>
 </body>
 </html>

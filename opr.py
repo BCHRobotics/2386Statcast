@@ -32,11 +32,10 @@ def index():
 @app.route('/matches', methods=['POST'])
 def get_matches():
     event_key = request.form['event_key']
-    team_key = "frc2386"
     
     # Get matches data
-    team_matches_url = f"https://www.thebluealliance.com/api/v3/team/{team_key}/event/{event_key}/matches"
-    matches_response = requests.get(team_matches_url, headers=headers)
+    event_matches_url = f"https://www.thebluealliance.com/api/v3/event/{event_key}/matches"
+    matches_response = requests.get(event_matches_url, headers=headers)
     matches_data = matches_response.json()
     
     # Get OPR data for the event
