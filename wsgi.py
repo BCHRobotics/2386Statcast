@@ -1,4 +1,4 @@
-from opr2 import app
+from opr import app
 
 if __name__ == "__main__":
     app.run()
