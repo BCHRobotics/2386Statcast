@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import requests
 import json
 from dotenv import load_dotenv
@@ -47,10 +47,15 @@ def index():
     # First check if teamsdata.json exists
     teams_data = []
     teamsdata_file = 'teamsdata.json'
+    teams_data_date = None
     
     # Try to load data from the file if it exists
     if os.path.exists(teamsdata_file):
         try:
+            # Get the modification time of the teamsdata file
+            mod_time = os.path.getmtime(teamsdata_file)
+            teams_data_date = datetime.fromtimestamp(mod_time).strftime('%Y-%m-%d %H:%M:%S')
+            
             with open(teamsdata_file, 'r') as f:
                 teams_data = json.load(f)
         except Exception as e:
@@ -84,6 +89,10 @@ def index():
             try:
                 with open(teamsdata_file, 'w') as f:
                     json.dump(teams_data, f)
+                    
+                # Update the modification time after saving the file
+                mod_time = os.path.getmtime(teamsdata_file)
+                teams_data_date = datetime.fromtimestamp(mod_time).strftime('%Y-%m-%d %H:%M:%S')
             except Exception as e:
                 print(f"Error saving teams data to file: {e}")
     
@@ -111,7 +120,7 @@ def index():
         ]
         autocomplete_teams = example_teams
     
-    return render_template('index.html', events=events_data, teams=autocomplete_teams)
+    return render_template('index.html', events=events_data, teams=autocomplete_teams, teams_data_date=teams_data_date)
 
 @app.route('/matches', methods=['POST'])
 def get_matches():
@@ -387,6 +396,27 @@ def analyze_match():
     except Exception as e:
         print(f"Error processing match data: {str(e)}")
         return f"Error processing match data: {str(e)}", 500
+
+@app.route('/refresh_teams_data', methods=['POST'])
+def refresh_teams_data():
+    """
+    Handle request to refresh the teams data by deleting the cached file
+    and redirecting to the index page to force a fresh API call
+    
+    Returns:
+        Redirect to index page
+    """
+    teamsdata_file = 'teamsdata.json'
+    
+    # Delete the teams data file if it exists
+    if os.path.exists(teamsdata_file):
+        try:
+            os.remove(teamsdata_file)
+        except Exception as e:
+            print(f"Error deleting teams data file: {e}")
+    
+    # Redirect to the index page, which will fetch fresh data
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     # Run the Flask application in debug mode when executing this file directly

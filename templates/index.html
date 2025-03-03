@@ -69,6 +69,33 @@
             font-size: 32px;
             margin-bottom: 30px;
         }
+        .data-info {
+            text-align: center;
+            font-size: 14px;
+            color: #aaaaaa;
+            margin-top: 10px;
+        }
+        .refresh-icon {
+            color: #64b5f6;
+            font-size: 8px;
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 3px;
+            transition: color 0.2s;
+            vertical-align: middle;
+            position: relative;
+            top: -1px;
+        }
+        .refresh-icon:hover {
+            color: #90caf9;
+        }
+        .icon-button {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -81,6 +108,16 @@
                 <input type="hidden" id="team_number" name="team_number" required>
                 <button type="submit">View Events</button>
             </form>
+            {% if teams_data_date %}
+            <div class="data-info">
+                Teams data last updated: {{ teams_data_date }}
+                <form action="{{ url_for('refresh_teams_data') }}" method="post" style="display: inline;">
+                    <button type="submit" class="icon-button" title="Refresh teams data">
+                        <i class="fas fa-sync-alt refresh-icon"></i>
+                    </button>
+                </form>
+            </div>
+            {% endif %}
         </div>
     </div>
 
