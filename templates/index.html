@@ -4,6 +4,7 @@
     <title>2386 FRC Match Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <style>
@@ -19,23 +20,26 @@
         }
         .team-number-highlight {
             font-weight: bold;
-            color: #1976d2;
+            color: #64b5f6;
         }
         .team-form {
             max-width: 500px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
         .team-input {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border: 1px solid #ddd;
+            border: 1px solid #444444;
             border-radius: 4px;
             font-size: 16px;
             box-sizing: border-box;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
         }
         button[type="submit"] {
             background-color: #4CAF50;
@@ -46,24 +50,38 @@
             cursor: pointer;
             font-size: 16px;
             width: 100%;
+            transition: background-color 0.3s;
         }
         button[type="submit"]:hover {
-            background-color: #45a049;
+            background-color: #3d8b40;
         }
         h1, h2 {
             text-align: center;
+            color: #ffffff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 95%;
+        }
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 30px;
         }
     </style>
 </head>
 <body>
-    <h1>FRC Match Analysis</h1>
-    <div class="team-form">
-        <h2>Enter Team Number</h2>
-        <form action="/events" method="post" id="team-form">
-            <input type="text" id="team-autocomplete" class="team-input" placeholder="Search by team number or name..." autocomplete="off">
-            <input type="hidden" id="team_number" name="team_number" required>
-            <button type="submit">View Events</button>
-        </form>
+    <div class="container">
+        <h1 class="page-title">FRC Match Analysis</h1>
+        <div class="team-form">
+            <h2>Enter Team Number</h2>
+            <form action="/events" method="post" id="team-form">
+                <input type="text" id="team-autocomplete" class="team-input" placeholder="Search by team number or name..." autocomplete="off">
+                <input type="hidden" id="team_number" name="team_number" required>
+                <button type="submit">View Events</button>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -184,6 +202,14 @@
                     }
                 }
             });
+            
+            // Apply dark theme to jQuery UI elements
+            $(".ui-autocomplete").addClass("ui-dark");
+            
+            // Store theme preference
+            if (!localStorage.getItem('theme')) {
+                localStorage.setItem('theme', 'dark');
+            }
         });
     </script>
 </body>

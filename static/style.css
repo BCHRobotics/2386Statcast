@@ -1,67 +1,216 @@
 body {
-    font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #000000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    margin: 0;
+    padding: 0;
     color: #e0e0e0;
 }
 
 select, button {
-    padding: 8px;
-    margin: 10px 0;
-    background-color: #333;
+    padding: 8px 12px;
+    margin: 5px 0;
+    border-radius: 4px;
+    font-size: 16px;
+    border: 1px solid #444444;
+    background-color: #2a2a2a;
     color: #e0e0e0;
-    border: 1px solid #444;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    margin: 20px 0;
     background-color: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 th, td {
-    padding: 8px;
+    padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #333333;
 }
 
 h1 {
-    color: #e0e0e0;
     text-align: center;
+    color: #ffffff;
+    margin-top: 30px;
+    margin-bottom: 20px;
 }
 
 h2 {
-    color: #000000;
-    text-align: center;
+    color: #ffffff;
+    margin-top: 20px;
+    margin-bottom: 15px;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 input[type="text"] {
+    width: 100%;
     padding: 10px;
-    width: 80%;
-    max-width: 300px;
-    margin-bottom: 10px;
-    border: 1px solid #444;
+    margin: 10px 0;
+    border: 1px solid #444444;
     border-radius: 4px;
-    background-color: #333;
+    font-size: 16px;
+    background-color: #2a2a2a;
     color: #e0e0e0;
+    box-sizing: border-box;
 }
 
 button {
     background-color: #4CAF50;
     color: white;
+    padding: 12px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #3d8b40;
+}
+
+/* Dark theme specific classes */
+.card, .section-card {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    margin: 10px 0;
+    padding: 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover, .section-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.header-section {
+    background-color: #2a2a2a;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.back-button {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #2a2a2a;
+    border: 1px solid #444444;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #e0e0e0;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.back-button:hover {
+    background-color: #3a3a3a;
+}
+
+.back-button i {
+    margin-right: 8px;
+}
+
+/* Team and alliance specific colors */
+.team-number {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.team-name {
+    color: #bbbbbb;
+}
+
+.red-alliance, .red-text {
+    color: #ff6659;
+}
+
+.blue-alliance, .blue-text {
+    color: #64b5f6;
+}
+
+/* Form elements in dark theme */
+select option, optgroup {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+}
+
+select optgroup {
+    font-weight: bold;
+    background-color: #333333;
+}
+
+input::placeholder {
+    color: #888888;
+}
+
+/* UI components */
+.ui-autocomplete {
+    background-color: #2a2a2a;
+    border: 1px solid #444444;
+    color: #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ui-menu-item {
+    color: #e0e0e0;
+}
+
+.ui-menu-item:hover, .ui-menu-item.ui-state-focus {
+    background-color: #3a3a3a;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+    border-color: #444444;
+}
+
+/* Additional helper classes */
+.highlight {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.error-text {
+    color: #f44336;
+}
+
+.disabled-text {
+    color: #777777;
+}
+
+/* Theme toggle */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 8px;
+    background-color: #333333;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+}
+
+.theme-toggle:hover {
+    background-color: #444444;
+}
+
+.theme-toggle i {
+    color: #ffffff;
+    font-size: 18px;
 }

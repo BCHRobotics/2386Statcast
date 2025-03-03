@@ -4,17 +4,19 @@
     <title>2386 FRC Match Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: #121212;
+            color: #e0e0e0;
         }
         
         h1, h2 {
             text-align: center;
-            color: #333;
+            color: #ffffff;
         }
         
         .container {
@@ -26,15 +28,15 @@
             text-align: center;
             margin-bottom: 30px;
             padding: 15px;
-            background-color: #e3f2fd;
+            background-color: #1e1e1e;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
         
         .team-number {
             font-size: 24px;
             font-weight: bold;
-            color: #1976d2;
+            color: #64b5f6;
         }
         
         .events-grid {
@@ -45,9 +47,9 @@
         }
         
         .event-card {
-            background-color: white;
+            background-color: #1e1e1e;
             border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
             overflow: hidden;
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
@@ -56,12 +58,13 @@
         
         .event-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
         
         .event-header {
             padding: 15px;
             background-color: #1976d2;
+            background-image: linear-gradient(135deg, #1976d2, #0a3880);
             color: white;
         }
         
@@ -86,7 +89,7 @@
         
         .event-detail i {
             margin-right: 10px;
-            color: #1976d2;
+            color: #64b5f6;
             width: 20px;
         }
         
@@ -94,7 +97,7 @@
             display: flex;
             justify-content: space-between;
             margin-top: 15px;
-            color: #666;
+            color: #aaaaaa;
             font-size: 14px;
         }
         
@@ -113,7 +116,7 @@
         }
         
         .event-select-button:hover {
-            background-color: #45a049;
+            background-color: #3d8b40;
         }
         
         .filters {
@@ -125,10 +128,12 @@
         
         .search-box {
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #444444;
             border-radius: 4px;
             width: 300px;
             font-size: 16px;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
         }
         
         .sort-options {
@@ -138,22 +143,23 @@
         
         .sort-button {
             padding: 10px 15px;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
+            background-color: #2a2a2a;
+            border: 1px solid #444444;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.2s;
+            color: #e0e0e0;
         }
         
         .sort-button:hover, .sort-button.active {
-            background-color: #e1e1e1;
+            background-color: #3a3a3a;
         }
         
         .no-events {
             text-align: center;
             padding: 30px;
             font-size: 18px;
-            color: #666;
+            color: #aaaaaa;
             grid-column: 1 / -1;
         }
         
@@ -176,15 +182,16 @@
             display: inline-block;
             margin-bottom: 20px;
             padding: 10px 15px;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
+            background-color: #2a2a2a;
+            border: 1px solid #444444;
             border-radius: 4px;
             text-decoration: none;
-            color: #333;
+            color: #e0e0e0;
+            transition: background-color 0.2s;
         }
         
         .back-button:hover {
-            background-color: #e1e1e1;
+            background-color: #3a3a3a;
         }
     </style>
 </head>
@@ -316,6 +323,11 @@
                 noEventsMsg.textContent = 'No events match your search.';
                 document.querySelector('.events-grid').appendChild(noEventsMsg);
             }
+        }
+        
+        // Store theme preference
+        if (!localStorage.getItem('theme')) {
+            localStorage.setItem('theme', 'dark');
         }
     </script>
 </body>

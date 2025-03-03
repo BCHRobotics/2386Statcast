@@ -8,16 +8,17 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #121212;
             margin: 0;
             padding: 0;
-            color: #333;
+            color: #e0e0e0;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
+            width: 95%;
         }
         
         .page-header {
@@ -29,12 +30,12 @@
         .page-title {
             font-size: 32px;
             margin-bottom: 10px;
-            color: #333;
+            color: #ffffff;
         }
         
         .match-info {
             font-size: 18px;
-            color: #666;
+            color: #aaaaaa;
             margin-bottom: 20px;
         }
         
@@ -51,20 +52,21 @@
         
         .alliance-section {
             flex: 1;
-            min-width: 45%;
+            min-width: 48%;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             transition: transform 0.2s, box-shadow 0.2s;
+            background-color: #1e1e1e;
         }
         
         .alliance-section:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
         
         .alliance-header {
-            padding: 20px;
+            padding: 15px 20px;
             color: white;
             font-weight: bold;
             display: flex;
@@ -74,12 +76,12 @@
         
         .red-alliance .alliance-header {
             background-color: #d32f2f;
-            background-image: linear-gradient(135deg, #d32f2f, #b71c1c);
+            background-image: linear-gradient(135deg, #d32f2f, #9a1010);
         }
         
         .blue-alliance .alliance-header {
             background-color: #1976d2;
-            background-image: linear-gradient(135deg, #1976d2, #0d47a1);
+            background-image: linear-gradient(135deg, #1976d2, #0a3880);
         }
         
         .alliance-title {
@@ -93,73 +95,81 @@
         }
         
         .alliance-content {
-            padding: 15px;
-            background-color: white;
+            padding: 12px;
+            padding-top: 40px;
+            background-color: #1e1e1e;
             overflow-x: auto;
+            position: relative;
         }
         
         .red-alliance {
-            border: 1px solid #ffcdd2;
+            border: 1px solid #661111;
         }
         
         .blue-alliance {
-            border: 1px solid #bbdefb;
+            border: 1px solid #0d3a6d;
         }
         
         .stats-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin: 10px 0;
+            margin: 5px 0;
+            margin-top: 15px;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             table-layout: fixed;
+            position: relative;
         }
         
         .stats-table th, .stats-table td {
-            padding: 10px 12px;
+            padding: 8px 10px;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #333333;
             white-space: nowrap;
         }
         
         .stats-table th:nth-child(1), .stats-table td:nth-child(1) {
-            width: 30%;
+            width: 33%;
             white-space: normal;
         }
         
         .stats-table th:nth-child(2), .stats-table td:nth-child(2),
         .stats-table th:nth-child(3), .stats-table td:nth-child(3),
         .stats-table th:nth-child(4), .stats-table td:nth-child(4) {
-            width: 15%;
+            width: 14%;
+            text-align: center;
         }
         
         .stats-table th:nth-child(5), .stats-table td:nth-child(5) {
             width: 25%;
             white-space: normal;
+            text-align: center;
         }
         
         .stats-table th {
-            background-color: #f5f5f5;
+            background-color: #2a2a2a;
             font-weight: 600;
-            color: #444;
+            color: #e0e0e0;
             position: relative;
             cursor: default;
             font-size: 0.95em;
+            padding-top: 10px;
+            padding-bottom: 10px;
         }
         
         .red-alliance .stats-table tr:hover {
-            background-color: #fff5f5;
+            background-color: #2a1e1e;
         }
         
         .blue-alliance .stats-table tr:hover {
-            background-color: #f5f9ff;
+            background-color: #1e2a3a;
         }
         
         .team-name {
             font-style: italic;
-            color: #666;
+            color: #bbbbbb;
             font-size: 0.85em;
             display: block;
             margin-top: 3px;
@@ -170,42 +180,43 @@
         .team-number {
             font-weight: bold;
             font-size: 1.1em;
-            color: #333;
+            color: #ffffff;
             display: block;
         }
         
         .stat-value {
             font-weight: 500;
             text-align: center;
+            color: #d0d0d0;
         }
         
         .highlight-stat {
             font-weight: bold;
-            color: #2e7d32;
+            color: #4caf50;
         }
         
         .highlight-negative {
-            color: #c62828;
+            color: #f44336;
         }
         
         .alliance-total {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-top: 1px solid #eee;
+            padding: 12px;
+            background-color: #252525;
+            border-top: 1px solid #333333;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 16px;
             flex-wrap: wrap;
         }
         
         .red-alliance .alliance-total {
-            color: #d32f2f;
+            color: #ff6659;
         }
         
         .blue-alliance .alliance-total {
-            color: #1976d2;
+            color: #64b5f6;
         }
         
         .tooltip {
@@ -217,55 +228,52 @@
         .tooltip .tooltip-text {
             visibility: hidden;
             width: 220px;
-            background-color: #333;
-            color: #fff;
+            background-color: #3a3a3a;
+            color: #ffffff;
             text-align: center;
             border-radius: 6px;
             padding: 10px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -110px;
+            position: fixed;
+            z-index: 1000;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.3s;
             font-weight: normal;
             font-size: 14px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
             pointer-events: none;
+            transform: translateY(10px);
         }
         
         .tooltip .tooltip-text::after {
             content: "";
             position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
+            width: 0;
+            height: 0;
             border-width: 5px;
             border-style: solid;
-            border-color: #333 transparent transparent transparent;
         }
         
         .tooltip:hover .tooltip-text {
             visibility: visible;
             opacity: 1;
+            transform: translateY(0);
         }
         
         .back-button {
             display: inline-block;
             margin: 20px 0;
             padding: 10px 20px;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
+            background-color: #2a2a2a;
+            border: 1px solid #444444;
             border-radius: 4px;
             text-decoration: none;
-            color: #333;
+            color: #e0e0e0;
             font-weight: 500;
             transition: background-color 0.2s;
         }
         
         .back-button:hover {
-            background-color: #e1e1e1;
+            background-color: #3a3a3a;
         }
         
         .back-button i {
@@ -283,23 +291,24 @@
             padding: 3px 8px;
             border-radius: 4px;
             font-size: 0.9em;
-            background-color: #f1f1f1;
+            background-color: #333333;
             margin-top: 3px;
+            color: #cccccc;
         }
         
         .prediction-section {
             text-align: center;
-            background-color: white;
+            background-color: #1e1e1e;
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
         
         .prediction-title {
             font-size: 24px;
             margin-bottom: 15px;
-            color: #333;
+            color: #ffffff;
         }
         
         .prediction-bar {
@@ -309,6 +318,7 @@
             position: relative;
             margin: 20px 0;
             overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) inset;
         }
         
         .prediction-marker {
@@ -316,8 +326,9 @@
             top: 0;
             width: 4px;
             height: 100%;
-            background-color: #333;
+            background-color: #ffffff;
             transform: translateX(-50%);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         }
         
         .prediction-labels {
@@ -328,11 +339,11 @@
         }
         
         .red-label {
-            color: #d32f2f;
+            color: #ff6659;
         }
         
         .blue-label {
-            color: #1976d2;
+            color: #64b5f6;
         }
         
         .winner-prediction {
@@ -344,18 +355,39 @@
         }
         
         .red-winner {
-            background-color: #ffebee;
-            color: #d32f2f;
+            background-color: #3d1c1c;
+            color: #ff6659;
         }
         
         .blue-winner {
-            background-color: #e3f2fd;
-            color: #1976d2;
+            background-color: #1a2940;
+            color: #64b5f6;
         }
         
         .even-match {
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+        }
+        
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1600px;
+            }
+            
+            .alliance-sections {
+                gap: 30px;
+            }
+        }
+        
+        @media (max-width: 1100px) and (min-width: 901px) {
+            .stats-table th, .stats-table td {
+                padding: 8px 6px;
+                font-size: 0.95em;
+            }
+            
+            .stats-table th:nth-child(1), .stats-table td:nth-child(1) {
+                width: 30%;
+            }
         }
         
         @media (max-width: 900px) {
@@ -364,15 +396,20 @@
             }
             
             .stats-table {
-                font-size: 0.9em;
+                font-size: 0.95em;
             }
             
             .alliance-section {
                 min-width: 100%;
             }
             
-            .stats-table th, .stats-table td {
-                padding: 8px 10px;
+            .container {
+                width: 98%;
+                padding: 10px;
+            }
+            
+            .alliance-section {
+                margin-bottom: 20px;
             }
         }
         
@@ -406,6 +443,7 @@
             
             .alliance-content {
                 padding: 10px;
+                padding-top: 35px;
             }
             
             .stats-table th .short-header {
@@ -423,6 +461,31 @@
         
         .stats-table th .long-header {
             display: inline;
+        }
+        
+        .tooltip-top::after {
+            top: auto;
+            bottom: var(--arrow-bottom, -10px);
+            left: 50%;
+            margin-left: -5px;
+            border-color: #3a3a3a transparent transparent transparent;
+        }
+        
+        .tooltip-bottom::after {
+            top: var(--arrow-top, -10px);
+            bottom: auto;
+            left: 50%;
+            margin-left: -5px;
+            border-color: transparent transparent #3a3a3a transparent;
+        }
+        
+        .tooltip .tooltip-text::after {
+            position: absolute;
+            content: "";
+            width: 0;
+            height: 0;
+            border-width: 5px;
+            border-style: solid;
         }
     </style>
 </head>
@@ -655,6 +718,43 @@
             if (marker) {
                 var percentage = marker.getAttribute('data-percentage');
                 marker.style.left = percentage + '%';
+            }
+            
+            var tooltips = document.querySelectorAll('.tooltip');
+            tooltips.forEach(function(tooltip) {
+                var tooltipText = tooltip.querySelector('.tooltip-text');
+                
+                tooltip.addEventListener('mouseenter', function(e) {
+                    var rect = tooltip.getBoundingClientRect();
+                    
+                    var top = rect.top - tooltipText.offsetHeight - 15;
+                    var left = rect.left + (rect.width/2) - (tooltipText.offsetWidth/2);
+                    
+                    if (top < 10) top = rect.bottom + 15;
+                    if (left < 10) left = 10;
+                    if (left + tooltipText.offsetWidth > window.innerWidth - 10) 
+                        left = window.innerWidth - tooltipText.offsetWidth - 10;
+                    
+                    tooltipText.style.top = top + 'px';
+                    tooltipText.style.left = left + 'px';
+                    
+                    if (top === rect.bottom + 15) {
+                        tooltipText.style.setProperty('--arrow-top', '-10px');
+                        tooltipText.style.setProperty('--arrow-bottom', 'auto');
+                        tooltipText.classList.add('tooltip-bottom');
+                        tooltipText.classList.remove('tooltip-top');
+                    } else {
+                        tooltipText.style.setProperty('--arrow-top', 'auto');
+                        tooltipText.style.setProperty('--arrow-bottom', '-10px');
+                        tooltipText.classList.add('tooltip-top');
+                        tooltipText.classList.remove('tooltip-bottom');
+                    }
+                });
+            });
+            
+            // Apply dark theme preference to localStorage
+            if (!localStorage.getItem('theme')) {
+                localStorage.setItem('theme', 'dark');
             }
         });
     </script>
