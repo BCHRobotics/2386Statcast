@@ -44,27 +44,48 @@ def index():
     events_data = events_response.json()
     
     # Get all teams data for autocomplete functionality
-    # Start with the first page (page 0) of teams
-    teams_url = f"https://www.thebluealliance.com/api/v3/teams/{year}/0"
-    teams_response = requests.get(teams_url, headers=headers)
-    
-    # If the first page of teams is available, get more pages
+    # First check if teamsdata.json exists
     teams_data = []
-    if teams_response.status_code == 200:
-        teams_data.extend(teams_response.json())
+    teamsdata_file = 'teamsdata.json'
+    
+    # Try to load data from the file if it exists
+    if os.path.exists(teamsdata_file):
+        try:
+            with open(teamsdata_file, 'r') as f:
+                teams_data = json.load(f)
+        except Exception as e:
+            print(f"Error loading teams data from file: {e}")
+            teams_data = []
+    
+    # If we couldn't load data from file, fetch from API
+    if not teams_data:
+        # Start with the first page (page 0) of teams
+        teams_url = f"https://www.thebluealliance.com/api/v3/teams/{year}/0"
+        teams_response = requests.get(teams_url, headers=headers)
         
-        # TBA API returns data in pages of ~500 teams, so we need to get additional pages
-        # Continue fetching pages until we get an empty or error response
-        page = 1
-        while True:
-            next_page_url = f"https://www.thebluealliance.com/api/v3/teams/{year}/{page}"
-            next_page_response = requests.get(next_page_url, headers=headers)
+        # If the first page of teams is available, get more pages
+        if teams_response.status_code == 200:
+            teams_data.extend(teams_response.json())
             
-            if next_page_response.status_code == 200 and next_page_response.json():
-                teams_data.extend(next_page_response.json())
-                page += 1
-            else:
-                break
+            # TBA API returns data in pages of ~500 teams, so we need to get additional pages
+            # Continue fetching pages until we get an empty or error response
+            page = 1
+            while True:
+                next_page_url = f"https://www.thebluealliance.com/api/v3/teams/{year}/{page}"
+                next_page_response = requests.get(next_page_url, headers=headers)
+                
+                if next_page_response.status_code == 200 and next_page_response.json():
+                    teams_data.extend(next_page_response.json())
+                    page += 1
+                else:
+                    break
+            
+            # Save the fetched data to a file for future use
+            try:
+                with open(teamsdata_file, 'w') as f:
+                    json.dump(teams_data, f)
+            except Exception as e:
+                print(f"Error saving teams data to file: {e}")
     
     # Format team data for autocomplete by extracting just the needed fields
     autocomplete_teams = []
