@@ -3,6 +3,7 @@ import requests
 import json
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 
 # Load environment variables from .env file
 # This allows secure storage of API keys and other sensitive information
@@ -36,8 +37,8 @@ def index():
     # Get initial events data for Team 2386 (Trojans)
     team_key = "frc2386"
     
-    # Set the competition year (update this as needed)
-    year = 2025
+    # Dynamically set the competition year to the current year
+    year = datetime.now().year
     team_events_url = f"https://www.thebluealliance.com/api/v3/team/{team_key}/events/{year}"
     events_response = requests.get(team_events_url, headers=headers)
     events_data = events_response.json()
