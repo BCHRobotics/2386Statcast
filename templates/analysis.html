@@ -297,12 +297,12 @@
         }
         
         .prediction-section {
-            text-align: center;
+            margin: 15px 0;
+            padding: 15px;
             background-color: #1e1e1e;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
+            border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
         }
         
         .prediction-title {
@@ -367,6 +367,48 @@
         .even-match {
             background-color: #2a2a2a;
             color: #e0e0e0;
+        }
+        
+        .actual-results {
+            background-color: #252525;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .actual-results .prediction-title {
+            color: #4CAF50;
+        }
+        
+        .actual-results-bar {
+            position: relative;
+            margin: 15px 0;
+        }
+        
+        .prediction-accuracy {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .prediction-accuracy.correct {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+        
+        .prediction-accuracy.incorrect {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+        }
+        
+        .prediction-accuracy.neutral {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+        }
+        
+        .prediction-accuracy i {
+            margin-right: 5px;
         }
         
         @media (min-width: 1400px) {
@@ -541,6 +583,53 @@
             {% endif %}
         </div>
         
+        {% if match_data.score_breakdown %}
+        <div class="prediction-section actual-results">
+            <h2 class="prediction-title">Actual Results</h2>
+            
+            {% set red_score = match_data.score_breakdown.red.totalPoints %}
+            {% set blue_score = match_data.score_breakdown.blue.totalPoints %}
+            
+            <div class="prediction-labels">
+                <div class="red-label">Red Alliance: {{ red_score }}</div>
+                <div class="blue-label">Blue Alliance: {{ blue_score }}</div>
+            </div>
+            
+            <div class="prediction-bar actual-results-bar">
+                {% set actual_percentage = (((red_score - blue_score) / (red_score + blue_score)) * 50) + 50 if (red_score + blue_score) > 0 else 50 %}
+                <div class="prediction-marker" data-percentage="{{ actual_percentage }}"></div>
+            </div>
+            
+            {% if red_score > blue_score %}
+                <div class="winner-prediction red-winner">
+                    <i class="fas fa-award"></i> Red alliance won by {{ red_score - blue_score }} points
+                    {% if red_advantage > 10 %}
+                        <div class="prediction-accuracy correct"><i class="fas fa-check-circle"></i> Prediction correct</div>
+                    {% elif blue_advantage > 10 %}
+                        <div class="prediction-accuracy incorrect"><i class="fas fa-times-circle"></i> Prediction incorrect</div>
+                    {% else %}
+                        <div class="prediction-accuracy neutral"><i class="fas fa-info-circle"></i> Match was predicted to be close</div>
+                    {% endif %}
+                </div>
+            {% elif blue_score > red_score %}
+                <div class="winner-prediction blue-winner">
+                    <i class="fas fa-award"></i> Blue alliance won by {{ blue_score - red_score }} points
+                    {% if blue_advantage > 10 %}
+                        <div class="prediction-accuracy correct"><i class="fas fa-check-circle"></i> Prediction correct</div>
+                    {% elif red_advantage > 10 %}
+                        <div class="prediction-accuracy incorrect"><i class="fas fa-times-circle"></i> Prediction incorrect</div>
+                    {% else %}
+                        <div class="prediction-accuracy neutral"><i class="fas fa-info-circle"></i> Match was predicted to be close</div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="winner-prediction even-match">
+                    <i class="fas fa-equals"></i> Match ended in a tie ({{ red_score }} - {{ blue_score }})
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
         <div class="alliance-sections">
             <div class="alliance-section red-alliance">
                 <div class="alliance-header">
@@ -714,40 +803,80 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var marker = document.querySelector('.prediction-marker');
-            if (marker) {
-                var percentage = marker.getAttribute('data-percentage');
+            // Position the win prediction marker
+            var predictionMarkers = document.querySelectorAll('.prediction-marker');
+            predictionMarkers.forEach(function(marker) {
+                var percentage = parseFloat(marker.getAttribute('data-percentage'));
                 marker.style.left = percentage + '%';
+            });
+            
+            // Handle the tooltips
+            var tooltipTriggers = document.querySelectorAll('.stats-header span.has-tooltip');
+            tooltipTriggers.forEach(function(trigger) {
+                trigger.addEventListener('mouseenter', function() {
+                    const tooltipText = this.querySelector('.tooltip-text');
+                    if (tooltipText) {
+                        positionTooltip(this, tooltipText);
+                    }
+                });
+            });
+
+            function positionTooltip(trigger, tooltip) {
+                // Get viewport dimensions
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                
+                // Get trigger position
+                const triggerRect = trigger.getBoundingClientRect();
+                
+                // Set tooltip to fixed position
+                tooltip.style.position = 'fixed';
+                tooltip.style.display = 'block';
+                
+                // Calculate width after displaying
+                const tooltipWidth = tooltip.offsetWidth;
+                const tooltipHeight = tooltip.offsetHeight;
+                
+                // Default tooltip positions (centered above trigger)
+                let top = triggerRect.top - tooltipHeight - 10;
+                let left = triggerRect.left + (triggerRect.width / 2) - (tooltipWidth / 2);
+                
+                // Check if tooltip would go off screen at top
+                const showBelow = top < 10;
+                
+                if (showBelow) {
+                    // Position below trigger
+                    top = triggerRect.bottom + 10;
+                    tooltip.style.setProperty('--arrow-top', '-8px');
+                    tooltip.style.setProperty('--arrow-bottom', 'auto');
+                } else {
+                    // Position above trigger
+                    tooltip.style.setProperty('--arrow-top', 'auto');
+                    tooltip.style.setProperty('--arrow-bottom', '-8px');
+                }
+                
+                // Adjust horizontal position if needed
+                if (left < 10) {
+                    left = 10;
+                } else if (left + tooltipWidth > viewportWidth - 10) {
+                    left = viewportWidth - tooltipWidth - 10;
+                }
+                
+                // Set final position
+                tooltip.style.top = `${top}px`;
+                tooltip.style.left = `${left}px`;
+                
+                // Adjust arrow position
+                const arrowLeft = triggerRect.left + (triggerRect.width / 2) - left;
+                tooltip.style.setProperty('--arrow-left', `${arrowLeft}px`);
             }
             
-            var tooltips = document.querySelectorAll('.tooltip');
-            tooltips.forEach(function(tooltip) {
-                var tooltipText = tooltip.querySelector('.tooltip-text');
-                
-                tooltip.addEventListener('mouseenter', function(e) {
-                    var rect = tooltip.getBoundingClientRect();
-                    
-                    var top = rect.top - tooltipText.offsetHeight - 15;
-                    var left = rect.left + (rect.width/2) - (tooltipText.offsetWidth/2);
-                    
-                    if (top < 10) top = rect.bottom + 15;
-                    if (left < 10) left = 10;
-                    if (left + tooltipText.offsetWidth > window.innerWidth - 10) 
-                        left = window.innerWidth - tooltipText.offsetWidth - 10;
-                    
-                    tooltipText.style.top = top + 'px';
-                    tooltipText.style.left = left + 'px';
-                    
-                    if (top === rect.bottom + 15) {
-                        tooltipText.style.setProperty('--arrow-top', '-10px');
-                        tooltipText.style.setProperty('--arrow-bottom', 'auto');
-                        tooltipText.classList.add('tooltip-bottom');
-                        tooltipText.classList.remove('tooltip-top');
-                    } else {
-                        tooltipText.style.setProperty('--arrow-top', 'auto');
-                        tooltipText.style.setProperty('--arrow-bottom', '-10px');
-                        tooltipText.classList.add('tooltip-top');
-                        tooltipText.classList.remove('tooltip-bottom');
+            // Keep tooltips hidden when not hovered
+            tooltipTriggers.forEach(function(trigger) {
+                trigger.addEventListener('mouseleave', function() {
+                    const tooltipText = this.querySelector('.tooltip-text');
+                    if (tooltipText) {
+                        tooltipText.style.display = 'none';
                     }
                 });
             });
