@@ -32,6 +32,8 @@ def index():
 @app.route('/matches', methods=['POST'])
 def get_matches():
     event_key = request.form['event_key']
+    team_number = request.form['team_number']
+    team_key = f"frc{team_number}"
     
     # Get matches data
     event_matches_url = f"https://www.thebluealliance.com/api/v3/event/{event_key}/matches"
@@ -62,18 +64,38 @@ def get_matches():
     semi_matches = []
     final_matches = []
     
+    # Filtered matches that include the specified team
+    team_qual_matches = []
+    team_quarter_matches = []
+    team_semi_matches = []
+    team_final_matches = []
+    
     for match in matches_data:
         match_number = match['match_number']
         set_number = match.get('set_number', 1)
         
+        # Check if the team is in this match
+        team_in_match = (
+            team_key in match['alliances']['red']['team_keys'] or 
+            team_key in match['alliances']['blue']['team_keys']
+        )
+        
         if match['comp_level'] == 'qm':
             qual_matches.append((match_number, match))
+            if team_in_match:
+                team_qual_matches.append((match_number, match))
         elif match['comp_level'] == 'qf':
             quarter_matches.append((set_number, match_number, match))
+            if team_in_match:
+                team_quarter_matches.append((set_number, match_number, match))
         elif match['comp_level'] == 'sf':
             semi_matches.append((set_number, match_number, match))
+            if team_in_match:
+                team_semi_matches.append((set_number, match_number, match))
         elif match['comp_level'] == 'f':
             final_matches.append((match_number, match))
+            if team_in_match:
+                team_final_matches.append((match_number, match))
     
     # Sort matches
     qual_matches.sort(key=lambda x: x[0])
@@ -81,14 +103,26 @@ def get_matches():
     semi_matches.sort(key=lambda x: (x[0], x[1]))
     final_matches.sort(key=lambda x: x[0])
     
+    # Sort team matches
+    team_qual_matches.sort(key=lambda x: x[0])
+    team_quarter_matches.sort(key=lambda x: (x[0], x[1]))
+    team_semi_matches.sort(key=lambda x: (x[0], x[1]))
+    team_final_matches.sort(key=lambda x: x[0])
+    
     return render_template('matches.html', 
                          qual_matches=qual_matches,
                          quarter_matches=quarter_matches,
                          semi_matches=semi_matches,
                          final_matches=final_matches,
+                         team_qual_matches=team_qual_matches,
+                         team_quarter_matches=team_quarter_matches,
+                         team_semi_matches=team_semi_matches,
+                         team_final_matches=team_final_matches,
                          event_key=event_key,
                          opr_data=opr_data,
-                         team_info=team_info)
+                         team_info=team_info,
+                         team_number=team_number,
+                         team_key=team_key)
 
 @app.route('/events', methods=['POST'])
 def get_events():
