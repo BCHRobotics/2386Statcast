@@ -3,13 +3,188 @@
 <head>
     <title>2386 FRC Match Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <style>
+        .ui-autocomplete {
+            max-height: 300px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 9999;
+        }
+        .ui-menu-item {
+            padding: 5px;
+            font-size: 14px;
+        }
+        .team-number-highlight {
+            font-weight: bold;
+            color: #1976d2;
+        }
+        .team-form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .team-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <h1>FRC Match Analysis</h1>
-    <h2>Enter Team Number</h2>
-    <form action="/events" method="post">
-        <input type="text" name="team_number" placeholder="Enter Team Number" required>
-        <button type="submit">View Events</button>
-    </form>
+    <div class="team-form">
+        <h2>Enter Team Number</h2>
+        <form action="/events" method="post" id="team-form">
+            <input type="text" id="team-autocomplete" class="team-input" placeholder="Search by team number or name..." autocomplete="off">
+            <input type="hidden" id="team_number" name="team_number" required>
+            <button type="submit">View Events</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Prepare team data for autocomplete
+            var teamData = [
+                {% for team in teams %}
+                {
+                    label: "{{ team.team_number }} - {{ team.team_name }}",
+                    value: "{{ team.team_number }}",
+                    number: "{{ team.team_number }}",
+                    name: "{{ team.team_name }}"
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            $("#team-autocomplete").autocomplete({
+                source: function(request, response) {
+                    var term = request.term.toLowerCase();
+                    var results = $.grep(teamData, function(item) {
+                        // Search by exact team number match
+                        if (item.number.toString() === term) {
+                            return true;
+                        }
+                        
+                        // Search by team number contains
+                        var numberMatch = item.number.toString().indexOf(term) > -1;
+                        
+                        // Search by team name contains
+                        var nameMatch = item.name.toLowerCase().indexOf(term) > -1;
+                        
+                        return numberMatch || nameMatch;
+                    });
+                    
+                    // Sort results: exact matches first, then by team number
+                    results.sort(function(a, b) {
+                        // Exact team number match comes first
+                        if (a.number.toString() === term) return -1;
+                        if (b.number.toString() === term) return 1;
+                        
+                        // Sort by team number (numeric sort)
+                        return parseInt(a.number) - parseInt(b.number);
+                    });
+                    
+                    response(results.slice(0, 20)); // Limit to 20 results for better performance
+                },
+                minLength: 1, // Show results after typing just 1 character
+                select: function(event, ui) {
+                    $("#team-autocomplete").val(ui.item.label);
+                    $("#team_number").val(ui.item.value);
+                    return false;
+                },
+                focus: function(event, ui) {
+                    // Prevent changing the input value on focus
+                    return false;
+                }
+            });
+            
+            // Custom rendering for autocomplete items
+            $("#team-autocomplete").autocomplete("instance")._renderItem = function(ul, item) {
+                var number = item.number;
+                var name = item.name;
+                var searchTerm = this.term.trim().toLowerCase();
+                
+                // Highlight the matching part in team number and name
+                var highlightedNumber = number.toString();
+                var highlightedName = name;
+                
+                if (number.toString().toLowerCase().indexOf(searchTerm) > -1) {
+                    var startPos = number.toString().toLowerCase().indexOf(searchTerm);
+                    var endPos = startPos + searchTerm.length;
+                    highlightedNumber = 
+                        number.toString().substring(0, startPos) + 
+                        "<span class='team-number-highlight'>" + 
+                        number.toString().substring(startPos, endPos) + 
+                        "</span>" + 
+                        number.toString().substring(endPos);
+                }
+                
+                if (name.toLowerCase().indexOf(searchTerm) > -1) {
+                    var startPos = name.toLowerCase().indexOf(searchTerm);
+                    var endPos = startPos + searchTerm.length;
+                    highlightedName = 
+                        name.substring(0, startPos) + 
+                        "<span class='team-number-highlight'>" + 
+                        name.substring(startPos, endPos) + 
+                        "</span>" + 
+                        name.substring(endPos);
+                }
+                
+                return $("<li>")
+                    .append("<div>" + highlightedNumber + " - " + highlightedName + "</div>")
+                    .appendTo(ul);
+            };
+            
+            // Form validation
+            $("#team-form").on("submit", function(e) {
+                if (!$("#team_number").val()) {
+                    alert("Please select a team from the dropdown.");
+                    e.preventDefault();
+                }
+            });
+            
+            // If user types a valid team number and leaves the field, auto-select that team
+            $("#team-autocomplete").on("blur", function() {
+                var input = $(this).val().trim();
+                
+                // Check if input is a number only
+                if (/^\d+$/.test(input)) {
+                    // Look for direct match by team number
+                    var match = teamData.find(function(team) {
+                        return team.number.toString() === input;
+                    });
+                    
+                    if (match) {
+                        $("#team-autocomplete").val(match.label);
+                        $("#team_number").val(match.value);
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

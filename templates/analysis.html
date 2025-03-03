@@ -3,58 +3,211 @@
 <head>
     <title>Match Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        .alliance-section {
-            margin: 20px;
-            padding: 15px;
-            border-radius: 5px;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
-        .red-alliance {
-            background-color: #ffebee;
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        .blue-alliance {
-            background-color: #e3f2fd;
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
         }
-        .stats-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-            background-color: #000000; /* Match the body background color */
+        
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #333;
         }
-        .stats-table th, .stats-table td {
-            padding: 8px;
-            text-align: left;
-            border: 1px solid #444; /* Match the border color */
+        
+        .match-info {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
         }
-        .stats-table th {
-            background-color: #333; /* Darker background for headers */
+        
+        .match-type {
             font-weight: bold;
         }
+        
+        .alliance-sections {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .alliance-section {
+            flex: 1;
+            min-width: 45%;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .alliance-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .alliance-header {
+            padding: 20px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .red-alliance .alliance-header {
+            background-color: #d32f2f;
+            background-image: linear-gradient(135deg, #d32f2f, #b71c1c);
+        }
+        
+        .blue-alliance .alliance-header {
+            background-color: #1976d2;
+            background-image: linear-gradient(135deg, #1976d2, #0d47a1);
+        }
+        
+        .alliance-title {
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .alliance-score {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .alliance-content {
+            padding: 15px;
+            background-color: white;
+            overflow-x: auto;
+        }
+        
+        .red-alliance {
+            border: 1px solid #ffcdd2;
+        }
+        
+        .blue-alliance {
+            border: 1px solid #bbdefb;
+        }
+        
+        .stats-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 10px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            table-layout: fixed;
+        }
+        
+        .stats-table th, .stats-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+        }
+        
+        .stats-table th:nth-child(1), .stats-table td:nth-child(1) {
+            width: 30%;
+            white-space: normal;
+        }
+        
+        .stats-table th:nth-child(2), .stats-table td:nth-child(2),
+        .stats-table th:nth-child(3), .stats-table td:nth-child(3),
+        .stats-table th:nth-child(4), .stats-table td:nth-child(4) {
+            width: 15%;
+        }
+        
+        .stats-table th:nth-child(5), .stats-table td:nth-child(5) {
+            width: 25%;
+            white-space: normal;
+        }
+        
+        .stats-table th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+            color: #444;
+            position: relative;
+            cursor: default;
+            font-size: 0.95em;
+        }
+        
+        .red-alliance .stats-table tr:hover {
+            background-color: #fff5f5;
+        }
+        
+        .blue-alliance .stats-table tr:hover {
+            background-color: #f5f9ff;
+        }
+        
         .team-name {
             font-style: italic;
             color: #666;
+            font-size: 0.85em;
+            display: block;
+            margin-top: 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+        
         .team-number {
             font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+            display: block;
         }
-        .alliance-total {
+        
+        .stat-value {
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .highlight-stat {
             font-weight: bold;
-            padding: 10px;
-            text-align: right;
-            color: #000000; /* Change text color to black */
+            color: #2e7d32;
         }
-        /* Commenting out debug section styles
-        .debug-section {
-            margin: 20px;
+        
+        .highlight-negative {
+            color: #c62828;
+        }
+        
+        .alliance-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 15px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+            font-weight: bold;
+            font-size: 18px;
+            flex-wrap: wrap;
         }
-        pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        
+        .red-alliance .alliance-total {
+            color: #d32f2f;
         }
-        */
+        
+        .blue-alliance .alliance-total {
+            color: #1976d2;
+        }
+        
         .tooltip {
             position: relative;
             display: inline-block;
@@ -63,165 +216,447 @@
         
         .tooltip .tooltip-text {
             visibility: hidden;
-            width: 200px;
+            width: 220px;
             background-color: #333;
             color: #fff;
             text-align: center;
             border-radius: 6px;
-            padding: 5px;
+            padding: 10px;
             position: absolute;
             z-index: 1;
             bottom: 125%;
             left: 50%;
-            margin-left: -100px;
+            margin-left: -110px;
             opacity: 0;
             transition: opacity 0.3s;
+            font-weight: normal;
+            font-size: 14px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+        
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
         }
         
         .tooltip:hover .tooltip-text {
             visibility: visible;
             opacity: 1;
         }
+        
+        .back-button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .back-button:hover {
+            background-color: #e1e1e1;
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+        }
+        
+        .team-heading {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        
+        .team-record {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            background-color: #f1f1f1;
+            margin-top: 3px;
+        }
+        
+        .prediction-section {
+            text-align: center;
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .prediction-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .prediction-bar {
+            height: 40px;
+            border-radius: 20px;
+            background: linear-gradient(to right, #d32f2f 0%, #1976d2 100%);
+            position: relative;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .prediction-marker {
+            position: absolute;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #333;
+            transform: translateX(-50%);
+        }
+        
+        .prediction-labels {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .red-label {
+            color: #d32f2f;
+        }
+        
+        .blue-label {
+            color: #1976d2;
+        }
+        
+        .winner-prediction {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .red-winner {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .blue-winner {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .even-match {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        @media (max-width: 900px) {
+            .alliance-sections {
+                flex-direction: column;
+            }
+            
+            .stats-table {
+                font-size: 0.9em;
+            }
+            
+            .alliance-section {
+                min-width: 100%;
+            }
+            
+            .stats-table th, .stats-table td {
+                padding: 8px 10px;
+            }
+        }
+        
+        @media (max-width: 700px) {
+            .stats-table {
+                font-size: 0.85em;
+            }
+            
+            .stats-table th:nth-child(1), .stats-table td:nth-child(1) {
+                width: 25%;
+            }
+            
+            .stats-table th:nth-child(2), .stats-table td:nth-child(2),
+            .stats-table th:nth-child(3), .stats-table td:nth-child(3),
+            .stats-table th:nth-child(4), .stats-table td:nth-child(4) {
+                width: 18%;
+            }
+            
+            .stats-table th:nth-child(5), .stats-table td:nth-child(5) {
+                width: 21%;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .tooltip .tooltip-text {
+                width: 180px;
+                margin-left: -90px;
+            }
+            
+            .alliance-content {
+                padding: 10px;
+            }
+            
+            .stats-table th .short-header {
+                display: inline;
+            }
+            
+            .stats-table th .long-header {
+                display: none;
+            }
+        }
+        
+        .stats-table th .short-header {
+            display: none;
+        }
+        
+        .stats-table th .long-header {
+            display: inline;
+        }
     </style>
 </head>
 <body>
-    <h1>Match Analysis</h1>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Matches
+        </a>
+        
+        <div class="page-header">
+            <h1 class="page-title">Match Analysis</h1>
+            <div class="match-info">
+                <span class="match-type">
+                    {% if 'qm' in match_data.key %}
+                        Qualification Match {{ match_data.match_number }}
+                    {% elif 'qf' in match_data.key %}
+                        Quarter Final {{ match_data.set_number }} Match {{ match_data.match_number }}
+                    {% elif 'sf' in match_data.key %}
+                        Semi Final {{ match_data.set_number }} Match {{ match_data.match_number }}
+                    {% elif 'f' in match_data.key %}
+                        Final Match {{ match_data.match_number }}
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        
+        {% set red_advantage = red_opr_sum - blue_opr_sum %}
+        {% set blue_advantage = blue_opr_sum - red_opr_sum %}
+        {% set advantage_percentage = (((red_opr_sum - blue_opr_sum) / (red_opr_sum + blue_opr_sum)) * 50) + 50 if (red_opr_sum + blue_opr_sum) > 0 else 50 %}
+        
+        <div class="prediction-section">
+            <h2 class="prediction-title">Match Prediction</h2>
+            <div class="prediction-labels">
+                <div class="red-label">Red Alliance</div>
+                <div class="blue-label">Blue Alliance</div>
+            </div>
+            <div class="prediction-bar">
+                <div class="prediction-marker" data-percentage="{{ advantage_percentage }}"></div>
+            </div>
+            
+            {% if red_advantage > 10 %}
+                <div class="winner-prediction red-winner">
+                    <i class="fas fa-trophy"></i> Red alliance favored by {{ "%.1f"|format(red_advantage) }} points
+                </div>
+            {% elif blue_advantage > 10 %}
+                <div class="winner-prediction blue-winner">
+                    <i class="fas fa-trophy"></i> Blue alliance favored by {{ "%.1f"|format(blue_advantage) }} points
+                </div>
+            {% else %}
+                <div class="winner-prediction even-match">
+                    <i class="fas fa-balance-scale"></i> Even match - difference of only {{ "%.1f"|format(abs(red_advantage)) }} points
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="alliance-sections">
+            <div class="alliance-section red-alliance">
+                <div class="alliance-header">
+                    <h2 class="alliance-title">Red Alliance</h2>
+                    <div class="alliance-score">
+                        {% if match_data.score_breakdown %}
+                            {{ match_data.score_breakdown.red.totalPoints }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="alliance-content">
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="tooltip">
+                                        Team
+                                        <span class="tooltip-text">Team number and name</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="tooltip">
+                                        <span class="long-header">OPR</span>
+                                        <span class="short-header">OPR</span>
+                                        <span class="tooltip-text">Offensive Power Rating - Estimated points contributed per match</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="tooltip">
+                                        <span class="long-header">DPR</span>
+                                        <span class="short-header">DPR</span>
+                                        <span class="tooltip-text">Defensive Power Rating - Estimated points prevented per match</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="tooltip">
+                                        <span class="long-header">CCWM</span>
+                                        <span class="short-header">CCWM</span>
+                                        <span class="tooltip-text">Calculated Contribution to Winning Margin - OPR minus DPR</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="tooltip">
+                                        <span class="long-header">Rank</span>
+                                        <span class="short-header">Rank</span>
+                                        <span class="tooltip-text">Current event ranking</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in match_data['alliances']['red']['team_keys'] %}
+                            <tr>
+                                <td class="team-heading">
+                                    <span class="team-number">{{ team[3:] }}</span>
+                                    <span class="team-name">{{ team_info[team]['nickname'] }}</span>
+                                </td>
+                                <td class="stat-value {% if team_stats[team]['opr'] > 0 %}highlight-stat{% endif %}">
+                                    {{ "%.1f"|format(team_stats[team]['opr']) }}
+                                </td>
+                                <td class="stat-value {% if team_stats[team]['dpr'] < 0 %}highlight-stat{% else %}highlight-negative{% endif %}">
+                                    {{ "%.1f"|format(team_stats[team]['dpr']) }}
+                                </td>
+                                <td class="stat-value {% if team_stats[team]['ccwm'] > 0 %}highlight-stat{% else %}highlight-negative{% endif %}">
+                                    {{ "%.1f"|format(team_stats[team]['ccwm']) }}
+                                </td>
+                                <td class="stat-value">
+                                    {% if team_stats[team]['ranking'] %}
+                                        #{{ team_stats[team]['ranking'] }}
+                                        <span class="team-record">{{ team_stats[team]['record'] }}</span>
+                                    {% else %}
+                                        Not ranked
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="alliance-total">
+                        <span>Alliance OPR Sum:</span>
+                        <span>{{ "%.1f"|format(red_opr_sum) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alliance-section blue-alliance">
+                <div class="alliance-header">
+                    <h2 class="alliance-title">Blue Alliance</h2>
+                    <div class="alliance-score">
+                        {% if match_data.score_breakdown %}
+                            {{ match_data.score_breakdown.blue.totalPoints }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="alliance-content">
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="tooltip">
+                                        Team
+                                        <span class="tooltip-text">Team number and name</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="tooltip">
+                                        <span class="long-header">OPR</span>
+                                        <span class="short-header">OPR</span>
+                                        <span class="tooltip-text">Offensive Power Rating - Estimated points contributed per match</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="tooltip">
+                                        <span class="long-header">DPR</span>
+                                        <span class="short-header">DPR</span>
+                                        <span class="tooltip-text">Defensive Power Rating - Estimated points prevented per match</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="tooltip">
+                                        <span class="long-header">CCWM</span>
+                                        <span class="short-header">CCWM</span>
+                                        <span class="tooltip-text">Calculated Contribution to Winning Margin - OPR minus DPR</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="tooltip">
+                                        <span class="long-header">Rank</span>
+                                        <span class="short-header">Rank</span>
+                                        <span class="tooltip-text">Current event ranking</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in match_data['alliances']['blue']['team_keys'] %}
+                            <tr>
+                                <td class="team-heading">
+                                    <span class="team-number">{{ team[3:] }}</span>
+                                    <span class="team-name">{{ team_info[team]['nickname'] }}</span>
+                                </td>
+                                <td class="stat-value {% if team_stats[team]['opr'] > 0 %}highlight-stat{% endif %}">
+                                    {{ "%.1f"|format(team_stats[team]['opr']) }}
+                                </td>
+                                <td class="stat-value {% if team_stats[team]['dpr'] < 0 %}highlight-stat{% else %}highlight-negative{% endif %}">
+                                    {{ "%.1f"|format(team_stats[team]['dpr']) }}
+                                </td>
+                                <td class="stat-value {% if team_stats[team]['ccwm'] > 0 %}highlight-stat{% else %}highlight-negative{% endif %}">
+                                    {{ "%.1f"|format(team_stats[team]['ccwm']) }}
+                                </td>
+                                <td class="stat-value">
+                                    {% if team_stats[team]['ranking'] %}
+                                        #{{ team_stats[team]['ranking'] }}
+                                        <span class="team-record">{{ team_stats[team]['record'] }}</span>
+                                    {% else %}
+                                        Not ranked
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="alliance-total">
+                        <span>Alliance OPR Sum:</span>
+                        <span>{{ "%.1f"|format(blue_opr_sum) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
-    <div class="alliance-section red-alliance">
-        <h2>Red Alliance</h2>
-        <table class="stats-table">
-            <thead>
-                <tr>
-                    <th>
-                        <div class="tooltip">
-                            Team
-                            <span class="tooltip-text">Team number and name</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="tooltip">
-                            OPR
-                            <span class="tooltip-text">Offensive Power Rating - Estimated points contributed per match</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="tooltip">
-                            DPR
-                            <span class="tooltip-text">Defensive Power Rating - Estimated points prevented per match</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="tooltip">
-                            CCWM
-                            <span class="tooltip-text">Calculated Contribution to Winning Margin - OPR minus DPR</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="tooltip">
-                            Ranking
-                            <span class="tooltip-text">Current event ranking</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="tooltip">
-                            Record
-                            <span class="tooltip-text">Win-Loss-Tie record at this event</span>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for team in match_data['alliances']['red']['team_keys'] %}
-                <tr>
-                    <td>
-                        <span class="team-number">{{ team[3:] }}</span>
-                        <br>
-                        <span class="team-name">{{ team_info[team]['nickname'] }}</span>
-                    </td>
-                    <td>{{ team_stats[team]['opr'] }}</td>
-                    <td>{{ team_stats[team]['dpr'] }}</td>
-                    <td>{{ team_stats[team]['ccwm'] }}</td>
-                    <td>{{ team_stats[team]['ranking'] or 'Not yet ranked' }}</td>
-                    <td>{{ team_stats[team]['record'] or 'No matches played' }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="alliance-total">
-            Alliance OPR Sum: {{ red_opr_sum }}
-        </div>
-    </div>
-
-    <div class="alliance-section blue-alliance">
-        <h2>Blue Alliance</h2>
-        <table class="stats-table">
-            <thead>
-                <tr>
-                    <th>
-                        <div class="tooltip">
-                            Team
-                            <span class="tooltip-text">Team number and name</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="tooltip">
-                            OPR
-                            <span class="tooltip-text">Offensive Power Rating - Estimated points contributed per match</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="tooltip">
-                            DPR
-                            <span class="tooltip-text">Defensive Power Rating - Estimated points prevented per match</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="tooltip">
-                            CCWM
-                            <span class="tooltip-text">Calculated Contribution to Winning Margin - OPR minus DPR</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="tooltip">
-                            Ranking
-                            <span class="tooltip-text">Current event ranking</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="tooltip">
-                            Record
-                            <span class="tooltip-text">Win-Loss-Tie record at this event</span>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for team in match_data['alliances']['blue']['team_keys'] %}
-                <tr>
-                    <td>
-                        <span class="team-number">{{ team[3:] }}</span>
-                        <br>
-                        <span class="team-name">{{ team_info[team]['nickname'] }}</span>
-                    </td>
-                    <td>{{ team_stats[team]['opr'] }}</td>
-                    <td>{{ team_stats[team]['dpr'] }}</td>
-                    <td>{{ team_stats[team]['ccwm'] }}</td>
-                    <td>{{ team_stats[team]['ranking'] or 'Not yet ranked' }}</td>
-                    <td>{{ team_stats[team]['record'] or 'No matches played' }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="alliance-total">
-            Alliance OPR Sum: {{ blue_opr_sum }}
-        </div>
-    </div>
-
-    {% if false %}  {# This will never render #}
-    <div class="debug-section">
-        <h2>Raw OPR Data</h2>
-        <pre>{{ opr_data | tojson(indent=2) }}</pre>
-    </div>
-    {% endif %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var marker = document.querySelector('.prediction-marker');
+            if (marker) {
+                var percentage = marker.getAttribute('data-percentage');
+                marker.style.left = percentage + '%';
+            }
+        });
+    </script>
 </body>
 </html>

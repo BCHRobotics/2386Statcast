@@ -22,12 +22,57 @@ headers = {
 def index():
     # Get initial events data
     team_key = "frc2386"
+    
     year = 2025
     team_events_url = f"https://www.thebluealliance.com/api/v3/team/{team_key}/events/{year}"
     events_response = requests.get(team_events_url, headers=headers)
     events_data = events_response.json()
     
-    return render_template('index.html', events=events_data)
+    # Get all teams data for autocomplete
+    teams_url = f"https://www.thebluealliance.com/api/v3/teams/{year}/0"
+    teams_response = requests.get(teams_url, headers=headers)
+    
+    # If the first page of teams is available, get more pages
+    teams_data = []
+    if teams_response.status_code == 200:
+        teams_data.extend(teams_response.json())
+        
+        # TBA API returns data in pages of ~500 teams, so we need to get additional pages
+        page = 1
+        while True:
+            next_page_url = f"https://www.thebluealliance.com/api/v3/teams/{year}/{page}"
+            next_page_response = requests.get(next_page_url, headers=headers)
+            
+            if next_page_response.status_code == 200 and next_page_response.json():
+                teams_data.extend(next_page_response.json())
+                page += 1
+            else:
+                break
+    
+    # Format team data for autocomplete
+    autocomplete_teams = []
+    for team in teams_data:
+        team_number = team.get('team_number')
+        team_name = team.get('nickname', 'Unknown Team')
+        if team_number and team_name:
+            autocomplete_teams.append({
+                'team_number': team_number,
+                'team_name': team_name
+            })
+    
+    # If no teams were found, provide some example teams for testing
+    if not autocomplete_teams:
+        # Add some common FRC teams as examples
+        example_teams = [
+            {'team_number': 2386, 'team_name': 'Trojans'},
+            {'team_number': 254, 'team_name': 'The Cheesy Poofs'},
+            {'team_number': 1114, 'team_name': 'Simbotics'},
+            {'team_number': 118, 'team_name': 'Robonauts'},
+            {'team_number': 33, 'team_name': 'Killer Bees'}
+        ]
+        autocomplete_teams = example_teams
+    
+    return render_template('index.html', events=events_data, teams=autocomplete_teams)
 
 @app.route('/matches', methods=['POST'])
 def get_matches():
